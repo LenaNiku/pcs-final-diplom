@@ -20,7 +20,7 @@ public class Main {
                     // process request
                     final String messageFromClient = in.readLine();
                     if (!messageFromClient.isEmpty()) {
-                        out.println(engine.search(messageFromClient));
+                        out.println(JsonWrapper.listValueToJson(engine.search(messageFromClient)));
                     }
                 }
             }

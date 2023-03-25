@@ -1,4 +1,3 @@
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
@@ -11,7 +10,7 @@ import java.util.stream.Stream;
 
 public class BooleanSearchEngine implements SearchEngine {
 
-    public Map<String, List<PageEntry>> index = new HashMap<>();
+    private final Map<String, List<PageEntry>> index = new HashMap<>();
 
     private void readPdf(File pdf) throws IOException {
         var doc = new PdfDocument(new PdfReader(pdf));
@@ -33,13 +32,13 @@ public class BooleanSearchEngine implements SearchEngine {
             }
             for (Map.Entry<String, Integer> entry : freqs.entrySet()) {
 
-                PageEntry pe = new PageEntry(pdf.getName(), pageNumber, entry.getValue());
-                List<PageEntry> lpe = new ArrayList<>();
-                lpe.add(pe);
+                PageEntry pageEntry = new PageEntry(pdf.getName(), pageNumber, entry.getValue());
+                List<PageEntry> listOfPageEntry = new ArrayList<>();
+                listOfPageEntry.add(pageEntry);
 
                 index.merge(
                         entry.getKey(),
-                        lpe,
+                        listOfPageEntry,
                         (listOne, listTwo) ->
                                 Stream.concat(listOne.stream(), listTwo.stream()).collect(Collectors.toList()));
             }
@@ -60,15 +59,8 @@ public class BooleanSearchEngine implements SearchEngine {
     }
 
     @Override
-    public String search(String word) throws JsonProcessingException {
+    public List<PageEntry> search(String word) {
         // тут реализуйте поиск по слову
-        var resultList = index.get(word);
-        return JsonWrapper.listValueToJson(resultList);
+        return index.getOrDefault(word.toLowerCase(Locale.ROOT), List.of());
     }
-
-    public List<PageEntry> search2(String word) {
-        // тут реализуйте поиск по слову
-        return index.get(word);
-    }
-
 }

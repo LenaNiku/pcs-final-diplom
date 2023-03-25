@@ -31,7 +31,7 @@ public class Client {
                 {
                     out.println(word);
                     final String messageFromServer = in.readLine();
-                    System.out.printf("Your results: %s", messageFromServer);
+                    System.out.printf("Your results: %s\n", messageFromServer);
                 }
             }
         }
